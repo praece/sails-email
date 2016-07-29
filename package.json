@@ -1,0 +1,32 @@
+{
+  "name": "praece-sails-email",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "NODE_ENV=test nodemon -x mocha example/test/**/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/praece/sails-email.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "sails": {
+    "isHook": true
+  },
+  "bugs": {
+    "url": "https://github.com/praece/sails-email/issues"
+  },
+  "homepage": "https://github.com/praece/sails-email#readme",
+  "dependencies": {
+    "bluebird": "^3.4.1",
+    "create-error": "^0.3.1",
+    "handlebars": "^4.0.5",
+    "lodash": "^4.14.0",
+    "mailgun-js": "^0.7.11"
+  }
+}

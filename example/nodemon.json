@@ -1,0 +1,5 @@
+{
+  "delay": 500,
+  "watch": ["node_modules/app", "node_modules/praece-sails-*/**/*", "api", "db", "config", "tasks", "test", "views", "../index.js"],
+  "ignoreRoot": [".git", ".tmp", ".sass-cache"]
+}
