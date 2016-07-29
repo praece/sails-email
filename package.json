@@ -16,7 +16,8 @@
   "author": "",
   "license": "ISC",
   "sails": {
-    "isHook": true
+    "isHook": true,
+    "hookName": "email"
   },
   "bugs": {
     "url": "https://github.com/praece/sails-email/issues"

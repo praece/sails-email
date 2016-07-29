@@ -1,4 +1,3 @@
-const email = require('../../');
 const options = {
   to: 'dev@praece.com',
   cc: 'kevinob11@gmail.com',
@@ -6,7 +5,10 @@ const options = {
   subject: 'Testing Email!',
   template: 'sampleEmail',
   data: {
-    name: 'Kevin OBrien',
+    person: {
+      firstName: 'Kevin',
+      lastName: 'OBrien'
+    },
     list: {
       items: ['Fish', 'Cat', 'Dog', 'Turtle'],
       title: 'Pets'
@@ -21,5 +23,5 @@ describe('Email', () => {
 function sendEmail() {
   this.timeout(5000);
 
-  return email.send(options);
+  return sails.hooks.email.send(options);
 }

@@ -89,7 +89,11 @@ module.exports.views = {
   *                                                                           *
   ****************************************************************************/
 
-  partials: false
-
+  partials: false,
+  helpers: {
+    fullName(person) {
+      return `${person.firstName} ${person.lastName}`;
+    }
+  }
 
 };
