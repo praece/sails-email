@@ -26,20 +26,35 @@ module.exports = function(sails) {
   });
 
   return {
-      send(passedOptions) {
+    send(passedOptions) {
       const mailgun = Mailgun(_.pick(sails.config.email, ['apiKey', 'domain']));
       const options = _.assign({ data: {} }, sails.config.email, passedOptions);
-      const { template, text, html, data, to, from, alwaysSendTo } = options;
+      const { template, text, html, data, to, from, alwaysSendTo, attachment } = options;
 
       // Make sure we a body, to and from
       if (!template && !text && !html) throw new InvalidOptions('template, text or html is required'); // eslint-disable-line max-len
       if (!from) throw new InvalidOptions('from address is required');
       if (!to) throw new InvalidOptions('to address is required');
 
-      // Convert arrays to comma delimited strings
+      // Convert arrays to comma delimited strings or attachments
       if (_.isArray(options.to)) options.to = _.join(options.to, ',');
       if (_.isArray(options.cc)) options.cc = _.join(options.cc, ',');
       if (_.isArray(options.bcc)) options.bcc = _.join(options.bcc, ',');
+      if (!_.isArray(attachment)) options.attachment = [attachment];
+
+      // Map streams with known lengths
+      if (attachment) {
+        options.attachment = _.map(options.attachment, file => {
+          if (!file.content.headers) return file.content;
+
+          return new mailgun.Attachment({
+            data: file.content,
+            filename: file.filename,
+            knownLength: file.content.headers['content-length'],
+            contentType: file.content.headers['content-type']
+          });
+        });
+      }
 
       // Always send to should override all recipient fields
       if (alwaysSendTo) {
