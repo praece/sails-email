@@ -20,11 +20,6 @@ module.exports = function(sails) {
     }
   });
 
-  // Register helpers
-  _.forEach(sails.config.views.helpers, (fn, key) => {
-    Handlebars.registerHelper(key, fn);
-  });
-
   return {
     send(passedOptions) {
       const mailgun = Mailgun(_.pick(sails.config.email, ['apiKey', 'domain']));
