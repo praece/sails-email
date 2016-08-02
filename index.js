@@ -13,7 +13,7 @@ module.exports = function(sails) {
   const templateFolder = path.resolve(sails.config.appPath, 'views/emailTemplates');
 
   // Pre-render all templates on lift
-  _.forEach(fs.readdirSync(templateFolder), function(file) {
+  _.forEach(fs.readdirSync(templateFolder), file => {
     if (_.endsWith(file, '.handlebars')) {
       const content = fs.readFileSync(`${templateFolder}/${file}`, 'utf8');
       templates[file.slice(0, -11)] = Handlebars.compile(content);
