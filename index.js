@@ -21,9 +21,18 @@ module.exports = function(sails) {
   });
 
   return {
-    send(passedOptions) {
+    normalizeOptions() {
+      const args = _.toArray(arguments);
+
+      if (args.length === 1) return args[0];
+
+      return _.assign({}, args[2], { data: args[1] }, { template: args[0] });
+    },
+
+    send() {
+      const normalizedOptions = this.normalizeOptions.apply(this, arguments);
       const mailgun = Mailgun(_.pick(sails.config.email, ['apiKey', 'domain']));
-      const options = _.assign({ data: {} }, sails.config.email, passedOptions);
+      const options = _.assign({ data: {} }, sails.config.email, normalizedOptions);
       const { template, text, html, data, to, from, alwaysSendTo, attachment } = options;
 
       // Make sure we a body, to and from
