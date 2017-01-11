@@ -7,10 +7,12 @@ const fs = require('fs');
 const _ = require('lodash');
 const InvalidOptions = createError('InvalidOptions');
 const fields = ['from', 'to', 'cc', 'bcc', 'subject', 'text', 'html', 'attachment', 'inline'];
+let mailgun;
 
 module.exports = function(sails) {
   const templates = {};
   const templateFolder = path.resolve(sails.config.appPath, 'views/emailTemplates');
+  mailgun = Mailgun(_.pick(sails.config.email, ['apiKey', 'domain']));
 
   // Pre-render all templates on lift
   _.forEach(fs.readdirSync(templateFolder), file => {
@@ -31,7 +33,6 @@ module.exports = function(sails) {
 
     send() {
       const normalizedOptions = this.normalizeOptions.apply(this, arguments);
-      const mailgun = Mailgun(_.pick(sails.config.email, ['apiKey', 'domain']));
       const options = _.assign({ data: {} }, sails.config.email, normalizedOptions);
       const { template, text, html, data, to, from, alwaysSendTo, attachment, inline } = options;
 
