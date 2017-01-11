@@ -6,7 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const _ = require('lodash');
 const InvalidOptions = createError('InvalidOptions');
-const fields = ['from', 'to', 'cc', 'bcc', 'subject', 'text', 'html', 'attachment'];
+const fields = ['from', 'to', 'cc', 'bcc', 'subject', 'text', 'html', 'attachment', 'inline'];
 
 module.exports = function(sails) {
   const templates = {};
@@ -33,7 +33,7 @@ module.exports = function(sails) {
       const normalizedOptions = this.normalizeOptions.apply(this, arguments);
       const mailgun = Mailgun(_.pick(sails.config.email, ['apiKey', 'domain']));
       const options = _.assign({ data: {} }, sails.config.email, normalizedOptions);
-      const { template, text, html, data, to, from, alwaysSendTo, attachment } = options;
+      const { template, text, html, data, to, from, alwaysSendTo, attachment, inline } = options;
 
       // Make sure we a body, to and from
       if (!template && !text && !html) throw new InvalidOptions('template, text or html is required'); // eslint-disable-line max-len
@@ -45,20 +45,11 @@ module.exports = function(sails) {
       if (_.isArray(options.cc)) options.cc = _.join(options.cc, ',');
       if (_.isArray(options.bcc)) options.bcc = _.join(options.bcc, ',');
       if (!_.isArray(attachment)) options.attachment = [attachment];
+      if (!_.isArray(inline)) options.inline = [inline];
 
       // Map streams with known lengths
-      if (attachment) {
-        options.attachment = _.map(options.attachment, file => {
-          if (!file.content.headers) return file.content;
-
-          return new mailgun.Attachment({
-            data: file.content,
-            filename: file.filename,
-            knownLength: file.content.headers['content-length'],
-            contentType: file.content.headers['content-type']
-          });
-        });
-      }
+      if (attachment) options.attachment = _.map(options.attachment, mapAttachments);
+      if (inline) options.inline = _.map(options.inline, mapAttachments);
 
       // Always send to should override all recipient fields
       if (alwaysSendTo) {
@@ -74,3 +65,15 @@ module.exports = function(sails) {
     }
   }
 };
+
+function mapAttachments(file) {
+  if (!file.content) return file;
+  if (!file.content.headers) return file.content;
+
+  return new mailgun.Attachment({
+    data: file.content,
+    filename: file.filename,
+    knownLength: file.content.headers['content-length'],
+    contentType: file.content.headers['content-type']
+  });
+}
