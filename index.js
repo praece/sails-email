@@ -6,7 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const _ = require('lodash');
 const InvalidOptions = createError('InvalidOptions');
-const fields = ['from', 'to', 'cc', 'bcc', 'subject', 'text', 'html', 'attachment', 'inline'];
+const fields = ['from', 'to', 'cc', 'bcc', 'subject', 'text', 'html', 'attachment', 'inline', 'h:Cc', 'h:Reply-To'];
 let mailgun;
 
 module.exports = function(sails) {
