@@ -38,7 +38,7 @@ module.exports = function(sails) {
 
       // Allow disabling all emails
       if (options.disableSendingEmail) {
-        sails.log.info('Email sending is disabled!');
+        sails.log.warn('Email sending is disabled!');
         return Promise.resolve();
       }
 
