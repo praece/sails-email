@@ -36,6 +36,12 @@ module.exports = function(sails) {
       const options = _.assign({ data: {} }, sails.config.email, normalizedOptions);
       const { template, text, html, data, to, from, alwaysSendTo, attachment, inline } = options;
 
+      // Allow disabling all emails
+      if (options.disableSendingEmail) {
+        sails.log.info('Email sending is disabled!');
+        return Promise.resolve();
+      }
+
       // Make sure we a body, to and from
       if (!template && !text && !html) throw new InvalidOptions('template, text or html is required'); // eslint-disable-line max-len
       if (!from) throw new InvalidOptions('from address is required');
