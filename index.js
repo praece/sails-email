@@ -6,8 +6,23 @@ const path = require('path');
 const fs = require('fs');
 const _ = require('lodash');
 const InvalidOptions = createError('InvalidOptions');
-const fields = ['from', 'to', 'cc', 'bcc', 'subject', 'text', 'html', 'attachment', 'inline', 'h:Cc', 'h:Reply-To'];
 let mailgun;
+const fields = [
+  'from',
+  'to',
+  'cc',
+  'bcc',
+  'subject',
+  'text',
+  'html',
+  'attachment',
+  'inline',
+  'h:Cc',
+  'h:Reply-To',
+  'h:In-Reply-To',
+  'h:References',
+  'h:Message-Id'
+];
 
 module.exports = function(sails) {
   const templates = {};
@@ -68,7 +83,8 @@ module.exports = function(sails) {
       // Render the template if we have one
       if (template) options.html = templates[template](options.data);
 
-      return Promise.resolve(mailgun.messages().send(_.pick(options, fields)));
+      const pickedFields = _.pick(options, fields);
+      return Promise.resolve(mailgun.messages().send(pickedFields));
     }
   }
 };
