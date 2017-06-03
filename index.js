@@ -58,9 +58,13 @@ module.exports = function(sails) {
       }
 
       // Make sure we a body, to and from
-      if (!template && !text && !html) throw new InvalidOptions('template, text or html is required'); // eslint-disable-line max-len
       if (!from) throw new InvalidOptions('from address is required');
       if (!to) throw new InvalidOptions('to address is required');
+
+      // Add an empty body if there isn't one
+      if (!template && !text && !html) {
+        options.html = '<div></div>';
+      }
 
       // Convert arrays to comma delimited strings or attachments
       if (_.isArray(options.to)) options.to = _.join(options.to, ',');
