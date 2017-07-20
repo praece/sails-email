@@ -51,6 +51,8 @@ module.exports = function(sails) {
       const options = _.assign({ data: {} }, sails.config.email, normalizedOptions);
       const { template, text, html, data, to, from, alwaysSendTo, attachment, inline } = options;
 
+      if (sails.config.email.getData) options.data = _.defaults(options.data, sails.config.email.getData());
+
       // Allow disabling all emails
       if (options.disableSendingEmail) {
         sails.log.warn('Email sending is disabled!');
