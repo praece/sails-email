@@ -90,12 +90,14 @@ module.exports = function(sails) {
       if (template) options.html = templates[template](options.data);
 
       const pickedFields = _.pick(options, fields);
+
       return Promise.resolve(mailgun.messages().send(pickedFields));
     }
   }
 };
 
 function mapAttachments(file) {
+  if (file.data) return new mailgun.Attachment(file);
   if (!file.content) return file;
   if (!file.content.headers) return file.content;
 
