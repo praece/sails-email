@@ -84,6 +84,15 @@ module.exports = function(sails) {
         options.to = _(options.to).split(',').intersection(onlySendTo).join(',');
         options.cc = _(options.cc).split(',').intersection(onlySendTo).join(',');
         options.bcc = _(options.bcc).split(',').intersection(onlySendTo).join(',');
+        
+        if (!options.to) delete options.to;
+        if (!options.cc) delete options.cc;
+        if (!options.bcc) delete options.bcc;
+
+        if (!options.to && !options.cc && !options.bcc) {
+          console.error(`Email will not be sent because there are no allowed addresses, allowed addresses are:`, onlySendTo);
+          return Promise.resolve();
+        }
       }
       
       // Always send to should override all recipient fields
