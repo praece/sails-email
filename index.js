@@ -49,7 +49,7 @@ module.exports = function(sails) {
     send() {
       const normalizedOptions = this.normalizeOptions.apply(this, arguments);
       const options = _.assign({ data: {} }, sails.config.email, normalizedOptions);
-      const { template, text, html, data, to, from, alwaysSendTo, attachment, inline } = options;
+      const { template, text, html, data, to, from, alwaysSendTo, onlySendTo, attachment, inline } = options;
 
       if (sails.config.email.getData) options.data = _.defaults(options.data, sails.config.email.getData());
 
@@ -79,6 +79,13 @@ module.exports = function(sails) {
       if (attachment) options.attachment = _.map(options.attachment, mapAttachments);
       if (inline) options.inline = _.map(options.inline, mapAttachments);
 
+      // Allow a whitelist of senders for testing
+      if (onlySendTo) {
+        options.to = _(options.to).split(',').intersection(onlySendTo).join(',');
+        options.cc = _(options.cc).split(',').intersection(onlySendTo).join(',');
+        options.bcc = _(options.bcc).split(',').intersection(onlySendTo).join(',');
+      }
+      
       // Always send to should override all recipient fields
       if (alwaysSendTo) {
         options.to = alwaysSendTo;
