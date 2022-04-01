@@ -115,7 +115,13 @@ module.exports = function(sails) {
 function mapAttachments(file) {
   if (file.data) return new mailgun.Attachment(file);
   if (!file.content) return file;
-  if (!file.content.headers) return file.content;
+  
+  if (!file.content.headers) {
+    return new mailgun.Attachment({
+      data: file.content,
+      filename: file.filename,
+    });
+  }
 
   return new mailgun.Attachment({
     data: file.content,
